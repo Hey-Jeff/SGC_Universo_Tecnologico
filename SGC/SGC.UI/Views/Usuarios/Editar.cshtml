@@ -1,0 +1,66 @@
+@model UsuarioEditarDto
+@{
+    ViewData["Title"] = "Editar usuario";
+}
+
+<h1 class="h3 mb-3">Editar usuario</h1>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form asp-action="Editar" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="Nombre" class="form-label">Nombre</label>
+                    <input asp-for="Nombre" class="form-control" />
+                    <span asp-validation-for="Nombre" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Correo" class="form-label">Correo</label>
+                    <input asp-for="Correo" class="form-control" autocomplete="off" />
+                    <span asp-validation-for="Correo" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Password" class="form-label">Nueva contraseña</label>
+                    <input asp-for="Password" class="form-control" autocomplete="new-password" />
+                    <div class="form-text">Déjela vacía para conservar la contraseña actual.</div>
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="ConfirmarPassword" class="form-label">Confirmar nueva contraseña</label>
+                    <input asp-for="ConfirmarPassword" class="form-control" autocomplete="new-password" />
+                    <span asp-validation-for="ConfirmarPassword" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="RolId" class="form-label">Rol</label>
+                    <select asp-for="RolId" asp-items="(SelectList)ViewBag.Roles" class="form-select">
+                        <option value="0">Seleccione un rol...</option>
+                    </select>
+                    <span asp-validation-for="RolId" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6 d-flex align-items-end">
+                    <div class="form-check form-switch">
+                        <input asp-for="Activo" class="form-check-input" />
+                        <label asp-for="Activo" class="form-check-label">Usuario activo</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                <a class="btn btn-outline-secondary" asp-action="Index">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

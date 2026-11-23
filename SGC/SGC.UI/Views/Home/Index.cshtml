@@ -1,0 +1,25 @@
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+<h1 class="h3 mb-1">Bienvenido, @User.ObtenerNombre()</h1>
+<p class="text-muted mb-4">Seleccione el módulo con el que desea trabajar.</p>
+
+<div class="row g-3">
+    @if (User.IsInRole(Roles.Administrador))
+    {
+        <div class="col-md-6 col-lg-4">
+            <a class="text-decoration-none" asp-controller="Usuarios" asp-action="Index">
+                <div class="card module-card h-100">
+                    <div class="card-body">
+                        <h2 class="h5 text-body">Usuarios</h2>
+                        <p class="text-muted mb-0">Crear, editar y eliminar usuarios y asignar roles.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    }
+
+    @* Los módulos de los demás integrantes (Clientes, Solicitudes, Seguimiento, Reportes)
+       se agregan aquí con el mismo formato, cuando estén listos y con el rol que corresponda. *@
+</div>
