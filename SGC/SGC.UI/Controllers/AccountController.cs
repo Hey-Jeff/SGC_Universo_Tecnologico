@@ -52,9 +52,11 @@ public class AccountController : Controller
         {
             new(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
             new(ClaimTypes.Name, usuario.Nombre),
-            new(ClaimTypes.Email, usuario.Correo),
-            new(ClaimTypes.Role, usuario.RolNombre)
+            new(ClaimTypes.Email, usuario.Correo)
         };
+
+        // Un usuario puede tener varios roles: un claim por cada uno.
+        claims.AddRange(usuario.RolNombres.Select(rol => new Claim(ClaimTypes.Role, rol)));
 
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         await HttpContext.SignInAsync(

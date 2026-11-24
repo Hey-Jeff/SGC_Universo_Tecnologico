@@ -13,12 +13,15 @@ public static class InyeccionDependencias
 
         services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
         services.AddScoped<IRolRepositorio, RolRepositorio>();
+        services.AddScoped<IBitacoraRepositorio, BitacoraRepositorio>();
 
         return services;
     }
 
-    /// Crea o actualiza la base de datos
-    
+    /// <summary>
+    /// Crea o actualiza la base de datos. Usa migraciones si el equipo ya las generó;
+    /// si no, crea el esquema directamente con EnsureCreated.
+    /// </summary>
     public static async Task InicializarBaseDeDatosAsync(this IServiceProvider provider)
     {
         using var scope = provider.CreateScope();

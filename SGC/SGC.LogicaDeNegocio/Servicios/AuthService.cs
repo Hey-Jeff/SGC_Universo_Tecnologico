@@ -20,7 +20,7 @@ public class AuthService : IAuthService
     {
         var usuario = await _usuarios.ObtenerPorCorreoAsync(UsuarioMapeo.NormalizarCorreo(dto.Correo));
 
-        // Mismo mensaje para correo inexistente y contraseña 
+        // Mismo mensaje para correo inexistente y contraseña errónea: no se revela cuál falló.
         if (usuario is null || !_passwords.Verificar(dto.Password, usuario.PasswordHash))
         {
             return ResultadoOperacion<UsuarioDto>.Fallo(CredencialesInvalidas);
@@ -29,6 +29,11 @@ public class AuthService : IAuthService
         if (!usuario.Activo)
         {
             return ResultadoOperacion<UsuarioDto>.Fallo("El usuario está inactivo. Contacte al administrador.");
+        }
+
+        if (usuario.UsuarioRoles.Count == 0)
+        {
+            return ResultadoOperacion<UsuarioDto>.Fallo("El usuario no tiene roles asignados. Contacte al administrador.");
         }
 
         return ResultadoOperacion<UsuarioDto>.Ok(usuario.ADto());

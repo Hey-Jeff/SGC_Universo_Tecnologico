@@ -4,6 +4,7 @@ using SGC.Abstracciones.Interfaces;
 
 namespace SGC.LogicaDeNegocio.Servicios;
 
+/// <summary>Hash de contraseñas con PBKDF2 (PasswordHasher de ASP.NET). Nunca se guarda texto plano.</summary>
 public class PasswordService : IPasswordService
 {
     private readonly PasswordHasher<Usuario> _hasher = new();

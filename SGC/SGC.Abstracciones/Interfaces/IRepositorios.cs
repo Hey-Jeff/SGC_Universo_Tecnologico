@@ -1,3 +1,4 @@
+using SGC.Abstracciones.DTOs;
 using SGC.Abstracciones.Entidades;
 
 namespace SGC.Abstracciones.Interfaces;
@@ -17,6 +18,12 @@ public interface IUsuarioRepositorio
 public interface IRolRepositorio
 {
     Task<IReadOnlyList<Rol>> ObtenerTodosAsync();
-    Task<Rol?> ObtenerPorIdAsync(int id);
     Task<Rol?> ObtenerPorNombreAsync(string nombre);
+    Task<IReadOnlyList<Rol>> ObtenerPorIdsAsync(IReadOnlyCollection<int> ids);
+}
+
+public interface IBitacoraRepositorio
+{
+    Task AgregarAsync(BitacoraEvento evento);
+    Task<IReadOnlyList<BitacoraEvento>> ConsultarAsync(BitacoraFiltroDto filtro, int maximo);
 }

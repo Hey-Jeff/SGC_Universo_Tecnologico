@@ -1,8 +1,8 @@
 namespace SGC.Abstracciones.Constantes;
 
-
-/// Nombres de los roles del sistema
-
+/// <summary>
+/// Nombres de los roles del sistema. Se usan en [Authorize(Roles = Roles.X)] y en los claims.
+/// </summary>
 public static class Roles
 {
     public const string Administrador = "Administrador";

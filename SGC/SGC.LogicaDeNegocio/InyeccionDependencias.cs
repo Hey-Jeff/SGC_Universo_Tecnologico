@@ -11,6 +11,7 @@ public static class InyeccionDependencias
         services.AddSingleton<IPasswordService, PasswordService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IUsuarioService, UsuarioService>();
+        services.AddScoped<IBitacoraService, BitacoraService>();
         services.AddScoped<IInicializadorService, InicializadorService>();
 
         return services;

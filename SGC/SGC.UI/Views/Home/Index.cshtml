@@ -12,14 +12,25 @@
             <a class="text-decoration-none" asp-controller="Usuarios" asp-action="Index">
                 <div class="card module-card h-100">
                     <div class="card-body">
-                        <h2 class="h5 text-body">Usuarios</h2>
+                        <h2 class="h5 text-body">Usuarios y roles</h2>
                         <p class="text-muted mb-0">Crear, editar y eliminar usuarios y asignar roles.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <a class="text-decoration-none" asp-controller="Bitacora" asp-action="Index">
+                <div class="card module-card h-100">
+                    <div class="card-body">
+                        <h2 class="h5 text-body">Bitácora de acciones</h2>
+                        <p class="text-muted mb-0">Consultar quién hizo cada cambio administrativo y cuándo.</p>
                     </div>
                 </div>
             </a>
         </div>
     }
 
-    @* Los módulos de los demás integrantes (Clientes, Solicitudes, Seguimiento, Reportes)
-       se agregan aquí con el mismo formato, cuando estén listos y con el rol que corresponda. *@
+    @* Los módulos de los demás integrantes (Clientes, Equipos, Inventario, Comercial,
+       Servicio técnico, Reportes) se agregan aquí con el mismo formato, con el rol que corresponda. *@
 </div>

@@ -1,0 +1,64 @@
+@model IReadOnlyList<BitacoraEventoDto>
+@{
+    ViewData["Title"] = "Bitácora";
+    var filtro = (BitacoraFiltroDto)ViewBag.Filtro;
+}
+
+<h1 class="h3 mb-3">Bitácora de acciones</h1>
+
+<form method="get" class="row g-2 align-items-end mb-3">
+    <div class="col-md-3">
+        <label class="form-label" for="Desde">Desde</label>
+        <input type="date" class="form-control" id="Desde" name="Desde" value="@filtro.Desde?.ToString("yyyy-MM-dd")" />
+    </div>
+    <div class="col-md-3">
+        <label class="form-label" for="Hasta">Hasta</label>
+        <input type="date" class="form-control" id="Hasta" name="Hasta" value="@filtro.Hasta?.ToString("yyyy-MM-dd")" />
+    </div>
+    <div class="col-md-3">
+        <label class="form-label" for="Entidad">Entidad</label>
+        <input type="text" class="form-control" id="Entidad" name="Entidad" value="@filtro.Entidad" placeholder="Ej: Usuario" />
+    </div>
+    <div class="col-md-3 d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+        <a class="btn btn-outline-secondary" asp-action="Index">Limpiar</a>
+    </div>
+</form>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Usuario</th>
+                    <th>Entidad</th>
+                    <th>Registro afectado</th>
+                    <th>Acción</th>
+                    <th>Detalle</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count == 0)
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">No hay eventos para los filtros seleccionados.</td>
+                    </tr>
+                }
+                @foreach (var e in Model)
+                {
+                    <tr>
+                        <td class="text-nowrap">@e.Fecha.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@e.UsuarioNombre</td>
+                        <td>@e.Entidad</td>
+                        <td>@e.Registro</td>
+                        <td><span class="badge text-bg-secondary">@e.Accion</span></td>
+                        <td class="small">@e.Detalle</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<p class="text-muted small mt-2">Se muestran los 500 eventos más recientes que cumplen el filtro.</p>

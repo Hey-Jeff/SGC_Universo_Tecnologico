@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using SGC.Abstracciones.Constantes;
 using SGC.Abstracciones.Entidades;
 using SGC.Abstracciones.Interfaces;
+using NombresRol = SGC.Abstracciones.Constantes.Roles;
 
 namespace SGC.AccesoADatos.Repositorios;
 
@@ -14,18 +14,17 @@ public class UsuarioRepositorio : IUsuarioRepositorio
         _db = db;
     }
 
+    private IQueryable<Usuario> ConRoles() =>
+        _db.Usuarios.Include(u => u.UsuarioRoles).ThenInclude(ur => ur.Rol);
+
     public async Task<IReadOnlyList<Usuario>> ObtenerTodosAsync() =>
-        await _db.Usuarios
-            .AsNoTracking()
-            .Include(u => u.Rol)
-            .OrderBy(u => u.Nombre)
-            .ToListAsync();
+        await ConRoles().AsNoTracking().OrderBy(u => u.Nombre).ToListAsync();
 
     public Task<Usuario?> ObtenerPorIdAsync(int id) =>
-        _db.Usuarios.Include(u => u.Rol).FirstOrDefaultAsync(u => u.Id == id);
+        ConRoles().FirstOrDefaultAsync(u => u.Id == id);
 
     public Task<Usuario?> ObtenerPorCorreoAsync(string correo) =>
-        _db.Usuarios.Include(u => u.Rol).FirstOrDefaultAsync(u => u.Correo == correo);
+        ConRoles().FirstOrDefaultAsync(u => u.Correo == correo);
 
     public Task<bool> ExisteCorreoAsync(string correo, int? excluirId = null) =>
         _db.Usuarios.AnyAsync(u => u.Correo == correo && (excluirId == null || u.Id != excluirId));
@@ -33,7 +32,7 @@ public class UsuarioRepositorio : IUsuarioRepositorio
     public Task<bool> ExisteAlgunoAsync() => _db.Usuarios.AnyAsync();
 
     public Task<int> ContarAdministradoresActivosAsync() =>
-        _db.Usuarios.CountAsync(u => u.Activo && u.Rol.Nombre == Roles.Administrador);
+        _db.Usuarios.CountAsync(u => u.Activo && u.UsuarioRoles.Any(ur => ur.Rol.Nombre == NombresRol.Administrador));
 
     public async Task AgregarAsync(Usuario usuario)
     {
@@ -43,7 +42,7 @@ public class UsuarioRepositorio : IUsuarioRepositorio
 
     public async Task ActualizarAsync(Usuario usuario)
     {
-        
+        // La entidad viene de ObtenerPorIdAsync (rastreada), basta con guardar los cambios.
         await _db.SaveChangesAsync();
     }
 }

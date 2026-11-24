@@ -16,9 +16,9 @@ public class RolRepositorio : IRolRepositorio
     public async Task<IReadOnlyList<Rol>> ObtenerTodosAsync() =>
         await _db.Roles.AsNoTracking().OrderBy(r => r.Id).ToListAsync();
 
-    public Task<Rol?> ObtenerPorIdAsync(int id) =>
-        _db.Roles.FirstOrDefaultAsync(r => r.Id == id);
-
     public Task<Rol?> ObtenerPorNombreAsync(string nombre) =>
         _db.Roles.FirstOrDefaultAsync(r => r.Nombre == nombre);
+
+    public async Task<IReadOnlyList<Rol>> ObtenerPorIdsAsync(IReadOnlyCollection<int> ids) =>
+        await _db.Roles.Where(r => ids.Contains(r.Id)).ToListAsync();
 }
