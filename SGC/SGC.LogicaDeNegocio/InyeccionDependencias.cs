@@ -14,6 +14,7 @@ public static class InyeccionDependencias
         services.AddScoped<IBitacoraService, BitacoraService>();
         services.AddScoped<IInicializadorService, InicializadorService>();
 
+        services.AddScoped<IClienteService, ClienteService>();
         return services;
     }
 }

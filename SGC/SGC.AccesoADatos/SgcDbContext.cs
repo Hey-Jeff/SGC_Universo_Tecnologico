@@ -15,6 +15,9 @@ public class SgcDbContext : DbContext
     public DbSet<UsuarioRol> UsuarioRoles => Set<UsuarioRol>();
     public DbSet<BitacoraEvento> Bitacora => Set<BitacoraEvento>();
 
+    //daniel
+    public DbSet<Cliente> Clientes => Set<Cliente>();
+
     // Los demás integrantes agregan aquí sus DbSet (Clientes, Equipos, Articulos...).
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -74,6 +77,18 @@ public class SgcDbContext : DbContext
                 .WithMany()
                 .HasForeignKey(b => b.UsuarioId)
                 .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<Cliente>(e =>
+        {
+            e.ToTable("Clientes");
+            e.HasKey(c => c.Id);
+            e.Property(c => c.Identificacion).IsRequired().HasMaxLength(30);
+            e.Property(c => c.NombreCompleto).IsRequired().HasMaxLength(150);
+            e.Property(c => c.Correo).IsRequired().HasMaxLength(150);
+            e.Property(c => c.Telefono).IsRequired().HasMaxLength(25);
+            e.Property(c => c.Direccion).IsRequired().HasMaxLength(250);
+            e.HasIndex(c => c.Identificacion).IsUnique();
         });
     }
 }

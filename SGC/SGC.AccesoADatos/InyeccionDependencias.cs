@@ -15,6 +15,8 @@ public static class InyeccionDependencias
         services.AddScoped<IRolRepositorio, RolRepositorio>();
         services.AddScoped<IBitacoraRepositorio, BitacoraRepositorio>();
 
+        services.AddScoped<IClienteRepositorio, ClienteRepositorio>();
+
         return services;
     }
 

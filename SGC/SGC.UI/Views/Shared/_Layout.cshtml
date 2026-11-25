@@ -28,6 +28,11 @@
                         @* Cada integrante agrega aquí el enlace de su módulo, con el rol que corresponda
                            (Clientes, Equipos, Inventario, Comercial, Servicio técnico, Reportes). *@
 
+
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Clientes" asp-action="Index">Clientes</a>
+                        </li>
+
                         @if (User.IsInRole(Roles.Administrador))
                         {
                             <li class="nav-item dropdown">
