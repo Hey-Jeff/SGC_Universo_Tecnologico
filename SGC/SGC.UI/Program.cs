@@ -7,6 +7,7 @@ using SGC.LogicaDeNegocio;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//usuario y contraseña por dearrollo
 
 if (builder.Environment.IsDevelopment())
 {
