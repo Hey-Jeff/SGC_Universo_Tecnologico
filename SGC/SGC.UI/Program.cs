@@ -7,10 +7,24 @@ using SGC.LogicaDeNegocio;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+if (builder.Environment.IsDevelopment())
+{
+    if (string.IsNullOrWhiteSpace(builder.Configuration["AdminInicial:Correo"]))
+    {
+        builder.Configuration["AdminInicial:Correo"] = "admin@gmail.com";
+    }
+
+    if (string.IsNullOrWhiteSpace(builder.Configuration["AdminInicial:Password"]))
+    {
+        builder.Configuration["AdminInicial:Password"] = "Admin123*";
+    }
+}
+
 var connectionString = builder.Configuration.GetConnectionString("SgcDb")
     ?? throw new InvalidOperationException("Falta la cadena de conexión 'SgcDb' en appsettings.json.");
 
-// Capas: datos y lógica de negocio se registran desde sus propios proyectos.
+
 builder.Services.AddAccesoADatos(connectionString);
 builder.Services.AddLogicaDeNegocio();
 
@@ -31,7 +45,6 @@ builder.Services
         options.Cookie.Name = "SGC.Auth";
     });
 
-// Todo requiere sesión por defecto; solo lo marcado con [AllowAnonymous] es público.
 builder.Services.AddAuthorization(options =>
 {
     options.FallbackPolicy = new AuthorizationPolicyBuilder()
