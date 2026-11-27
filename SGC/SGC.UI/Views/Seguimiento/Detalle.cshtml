@@ -1,0 +1,113 @@
+@model SeguimientoVista
+@{
+    var d = Model.Detalle;
+    ViewData["Title"] = $"Gestión {d.Datos.Id}";
+}
+<h1 class="h3">Gestión #@d.Datos.Id</h1>
+<div class="card card-body mb-3">
+    <dl class="row mb-0">
+        <dt class="col-sm-3">Cliente</dt><dd class="col-sm-9">@d.Datos.Identificacion — @d.Datos.Cliente</dd>
+        <dt class="col-sm-3">Monto</dt><dd class="col-sm-9">₡@d.Datos.Monto.ToString("N2")</dd>
+        <dt class="col-sm-3">Estado</dt><dd class="col-sm-9">@EstadosCredito.Etiqueta(d.Datos.Estado)</dd>
+        <dt class="col-sm-3">Comentario inicial</dt><dd class="col-sm-9 text-break">@d.Comentario</dd>
+    </dl>
+</div>
+<h2 class="h5">Documentos</h2>
+@if (d.Documentos.Count == 0) { <p class="text-muted">No hay documentos adjuntos.</p> }
+<ul>
+    @foreach (var doc in d.Documentos)
+    {
+        <li><a asp-action="Descargar" asp-route-id="@doc.Id">@doc.Nombre</a></li>
+    }
+</ul>
+@if (Model.PuedeAnalizar || Model.PuedeDecidir)
+{
+    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modificar">Modificar gestión</button>
+    <div class="modal fade" id="modificar" tabindex="-1" aria-labelledby="tituloModal" aria-hidden="true">
+        <div class="modal-dialog"><div class="modal-content">
+            <form asp-action="Cambiar" method="post" enctype="multipart/form-data" id="formCambio">
+                <div class="modal-header">
+                    <h2 class="modal-title h5" id="tituloModal">Modificar gestión</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="Id" value="@d.Datos.Id" />
+                    <input type="hidden" name="Version" value="@d.Version" />
+                    <label for="accion" class="form-label">Acción</label>
+                    <select id="accion" name="Accion" class="form-select" required>
+                        @if (Model.PuedeAnalizar)
+                        {
+                            <option value="Adjuntar">Adjuntar documentos</option>
+                            <option value="Enviar">Enviar a aprobación</option>
+                        }
+                        @if (Model.PuedeDecidir)
+                        {
+                            <option value="Aprobar">Aprobar</option>
+                            <option value="Devolver">Devolver</option>
+                        }
+                    </select>
+                    <label for="comentario" class="form-label mt-3">Comentario</label>
+                    <textarea id="comentario" name="Comentario" maxlength="500" class="form-control" required="@Model.PuedeDecidir"></textarea>
+                    @if (Model.PuedeAnalizar)
+                    {
+                        <label for="archivos" class="form-label mt-3">Documentos PDF, PNG o JPG</label>
+                        <input id="archivos" name="archivos" type="file" multiple accept=".pdf,.png,.jpg,.jpeg" class="form-control" />
+                        <div class="form-text">Máximo 5 archivos, 5 MB por archivo y 10 MB por operación.</div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Confirmar</button>
+                </div>
+            </form>
+        </div></div>
+    </div>
+}
+<h2 class="h5">Historial de modificaciones</h2>
+<div class="table-responsive">
+    <table class="table table-striped align-middle">
+        <thead><tr><th>Fecha UTC</th><th>Usuario</th><th>Acción</th><th>Estado anterior</th><th>Nuevo estado</th><th>Comentario</th></tr></thead>
+        <tbody>
+        @foreach (var m in d.Historial)
+        {
+            <tr><td>@m.Fecha.ToString("g")</td><td>@m.Usuario</td><td>@m.Accion</td><td>@m.EstadoAnterior</td><td>@m.EstadoNuevo</td><td class="text-break">@m.Comentario</td></tr>
+        }
+        </tbody>
+    </table>
+</div>
+<a asp-action="Index" class="btn btn-secondary">Volver</a>
+@section Scripts {
+<script>
+    const form = document.getElementById('formCambio');
+    if (form) {
+        const accion = document.getElementById('accion');
+        const archivos = document.getElementById('archivos');
+        const comentario = document.getElementById('comentario');
+        const actualizar = () => {
+            if (archivos) archivos.required = accion.value === 'Adjuntar';
+            comentario.required = ['Aprobar', 'Devolver'].includes(accion.value);
+        };
+        accion.addEventListener('change', actualizar);
+        actualizar();
+        let confirmando = false;
+        form.addEventListener('submit', async e => {
+            e.preventDefault();
+            if (confirmando) return;
+            confirmando = true;
+            try {
+                const texto = accion.options[accion.selectedIndex].text;
+                const confirmado = typeof Swal !== 'undefined'
+                    ? (await Swal.fire({ title: 'Confirmar modificación', text: texto, icon: 'question',
+                        showCancelButton: true, confirmButtonText: 'Confirmar', cancelButtonText: 'Cancelar',
+                        // Mantener la confirmación dentro del modal activo evita conflictos de foco.
+                        target: document.getElementById('modificar') })).isConfirmed
+                    : window.confirm(texto);
+                if (confirmado) {
+                    form.querySelector('button[type="submit"]').disabled = true;
+                    HTMLFormElement.prototype.submit.call(form);
+                }
+            } finally { confirmando = false; }
+        });
+    }
+</script>
+}
