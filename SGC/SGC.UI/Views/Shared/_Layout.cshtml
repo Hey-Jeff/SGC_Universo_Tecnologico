@@ -33,6 +33,13 @@
                             <a class="nav-link" asp-controller="Clientes" asp-action="Index">Clientes</a>
                         </li>
 
+                        @if (User.IsInRole(Roles.Administrador) || User.IsInRole(Roles.ServicioCliente))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="SolicitudesCredito" asp-action="Index">Solicitudes de crédito</a>
+                            </li>
+                        }
+
                         @if (User.IsInRole(Roles.Administrador))
                         {
                             <li class="nav-item dropdown">

@@ -15,6 +15,7 @@ public static class InyeccionDependencias
         services.AddScoped<IInicializadorService, InicializadorService>();
 
         services.AddScoped<IClienteService, ClienteService>();
+        services.AddScoped<ISolicitudCreditoService, SolicitudCreditoService>();
         return services;
     }
 }

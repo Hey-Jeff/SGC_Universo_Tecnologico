@@ -17,6 +17,8 @@ public class SgcDbContext : DbContext
 
     //daniel
     public DbSet<Cliente> Clientes => Set<Cliente>();
+    public DbSet<SolicitudCredito> SolicitudesCredito => Set<SolicitudCredito>();
+    public DbSet<DocumentoSolicitudCredito> DocumentosSolicitudCredito => Set<DocumentoSolicitudCredito>();
 
     // Los demás integrantes agregan aquí sus DbSet (Clientes, Equipos, Articulos...).
 
@@ -89,6 +91,29 @@ public class SgcDbContext : DbContext
             e.Property(c => c.Telefono).IsRequired().HasMaxLength(25);
             e.Property(c => c.Direccion).IsRequired().HasMaxLength(250);
             e.HasIndex(c => c.Identificacion).IsUnique();
+        });
+
+        modelBuilder.Entity<SolicitudCredito>(e =>
+        {
+            e.ToTable("SolicitudesCredito");
+            e.HasKey(s => s.Id);
+            e.Property(s => s.Monto).HasPrecision(18, 2).IsRequired();
+            e.Property(s => s.Comentarios).HasMaxLength(1000);
+            e.Property(s => s.Estado).IsRequired().HasMaxLength(30);
+            e.HasIndex(s => new { s.ClienteId, s.Estado });
+            e.HasOne<Cliente>().WithMany().HasForeignKey(s => s.ClienteId).OnDelete(DeleteBehavior.Restrict);
+            e.HasOne<Usuario>().WithMany().HasForeignKey(s => s.UsuarioRegistroId).OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<DocumentoSolicitudCredito>(e =>
+        {
+            e.ToTable("DocumentosSolicitudCredito");
+            e.HasKey(d => d.Id);
+            e.Property(d => d.NombreOriginal).IsRequired().HasMaxLength(255);
+            e.Property(d => d.NombreAlmacenado).IsRequired().HasMaxLength(100);
+            e.Property(d => d.RutaRelativa).IsRequired().HasMaxLength(500);
+            e.HasOne(d => d.Solicitud).WithMany(s => s.Documentos)
+                .HasForeignKey(d => d.SolicitudCreditoId).OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

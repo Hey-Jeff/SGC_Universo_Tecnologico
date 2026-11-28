@@ -5,3 +5,6 @@ obj/
 *.user
 *.suo
 appsettings.Development.json
+
+# Documentos privados cargados por el módulo de solicitudes
+App_Data/

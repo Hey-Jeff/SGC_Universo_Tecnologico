@@ -1,0 +1,23 @@
+@model IReadOnlyList<SGC.Abstracciones.DTOs.SolicitudCreditoDto>
+@{
+    ViewData["Title"] = "Solicitudes de crédito";
+}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div><span class="text-uppercase text-primary fw-semibold small">Servicio al cliente</span><h2 class="mb-1">Solicitudes de crédito</h2><p class="text-muted mb-0">Consulta y registro de solicitudes de los clientes.</p></div>
+    <a asp-action="Crear" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nueva solicitud</a>
+</div>
+<div class="card border-0 shadow-sm"><div class="card-body p-0">
+@if (Model.Count == 0)
+{
+    <div class="text-center py-5"><h5>No hay solicitudes registradas</h5><p class="text-muted">Cuando registres una solicitud, aparecerá en esta lista.</p><a asp-action="Crear" class="btn btn-outline-primary">Crear primera solicitud</a></div>
+}
+else
+{
+    <div class="table-responsive"><table class="table table-hover align-middle mb-0"><thead class="table-light"><tr><th>N.º</th><th>Cliente</th><th>Monto solicitado</th><th>Fecha</th><th>Documentos</th><th>Estado</th></tr></thead><tbody>
+    @foreach (var solicitud in Model)
+    {
+        <tr><td class="fw-semibold">#@solicitud.Id</td><td><div class="fw-semibold">@solicitud.NombreCliente</div><small class="text-muted">@solicitud.IdentificacionCliente</small></td><td>@solicitud.Monto.ToString("C2", System.Globalization.CultureInfo.GetCultureInfo("es-CR"))</td><td>@solicitud.FechaRegistro.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td><td><span class="badge text-bg-light">@solicitud.CantidadDocumentos archivo(s)</span></td><td><span class="badge text-bg-primary">@solicitud.Estado</span></td></tr>
+    }
+    </tbody></table></div>
+}
+</div></div>

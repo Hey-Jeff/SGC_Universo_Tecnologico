@@ -1,0 +1,21 @@
+@model SGC.Abstracciones.DTOs.SolicitudCreditoCrearDto
+@{
+    ViewData["Title"] = "Nueva solicitud de crédito";
+}
+<div class="mb-4"><a asp-action="Index" class="text-decoration-none small">← Volver a solicitudes</a><div class="mt-2"><span class="text-uppercase text-primary fw-semibold small">Servicio al cliente</span><h2 class="mb-1">Crear solicitud de crédito</h2><p class="text-muted mb-0">Complete la información del cliente y adjunte los documentos de respaldo.</p></div></div>
+<div class="row g-4"><div class="col-lg-8"><div class="card border-0 shadow-sm"><div class="card-body p-4">
+<form asp-action="Crear" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+    <h5 class="mb-3">Información del cliente</h5>
+    <div class="mb-3"><label asp-for="IdentificacionCliente" class="form-label fw-semibold"></label><input asp-for="IdentificacionCliente" class="form-control" placeholder="Ingrese la identificación registrada del cliente" autocomplete="off"/><span asp-validation-for="IdentificacionCliente" class="text-danger small"></span><div class="form-text">El cliente debe existir y encontrarse activo en el sistema.</div></div>
+    <hr class="my-4"/><h5 class="mb-3">Detalles del crédito</h5>
+    <div class="mb-3"><label asp-for="Monto" class="form-label fw-semibold"></label><div class="input-group"><span class="input-group-text">₡</span><input asp-for="Monto" class="form-control" type="number" min="1" max="10000000" step="0.01" placeholder="Ej. 2500000"/></div><span asp-validation-for="Monto" class="text-danger small"></span><div class="form-text">Monto máximo permitido: ₡10.000.000.</div></div>
+    <div class="mb-3"><label asp-for="Comentarios" class="form-label fw-semibold"></label><textarea asp-for="Comentarios" class="form-control" rows="4" placeholder="Agregue observaciones relevantes para el análisis de la solicitud..."></textarea><span asp-validation-for="Comentarios" class="text-danger small"></span></div>
+    <hr class="my-4"/><h5 class="mb-2">Documentos de respaldo</h5><p class="text-muted small">Puede adjuntar varios archivos. Formatos permitidos: PDF, JPG, PNG y DOCX. Máximo 10 MB por archivo.</p>
+    <div class="mb-4"><input type="file" name="archivos" class="form-control" multiple accept=".pdf,.jpg,.jpeg,.png,.docx"/><span class="text-danger small">@Html.ValidationMessage("archivos")</span></div>
+    <div class="d-flex flex-wrap gap-2"><button type="submit" class="btn btn-primary px-4">Registrar solicitud</button><a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a></div>
+</form>
+</div></div></div>
+<div class="col-lg-4"><div class="card border-0 shadow-sm mb-3"><div class="card-body"><h6 class="fw-bold">Reglas de registro</h6><ul class="small text-muted ps-3 mb-0"><li class="mb-2">El monto no puede superar ₡10.000.000.</li><li class="mb-2">El cliente no debe tener otra solicitud en estado Registrado.</li><li class="mb-2">Tampoco puede tener una solicitud en estado Devolución.</li><li>La solicitud válida se registra inicialmente como Registrado.</li></ul></div></div><div class="alert alert-info small mb-0"><strong>Importante:</strong> revise la identificación antes de guardar. El sistema validará las reglas nuevamente en el servidor.</div></div></div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }
